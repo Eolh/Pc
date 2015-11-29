@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import model.setSeatInfo;
 import view.FrameLogin;
 import view.FrameManage;
 import DAO.DaoLogin;
@@ -19,12 +20,14 @@ public class Main {
 	private static ServerSocket serverSocket;
 	private Socket socket;
 	private String msg;
-
+	static int i=0;
 	private FrameManage frameManage;
 	private FrameLogin frameLogin;
 	private DaoLogin daoLogin;
 	private static Map<String, DataOutputStream> clientsMap = new HashMap<String, DataOutputStream>();
-
+	
+	public static setSeatInfo[] setseatinfo = new setSeatInfo[50]; 
+	
 	public static final void main(String[] args) throws Exception {
 		Main main = new Main();
 		main.frameLogin = new FrameLogin();
@@ -69,21 +72,30 @@ public class Main {
 	class Receiver extends Thread {
 		private DataInputStream in;
 		private DataOutputStream out;
-		private String info;
+		private String id,pwd,seatSt;
+		private int seat;
 
 		/** XXX 2. 리시버가 한일은 자기 혼자서 네트워크 처리 계속..듣기.. 처리해주는 것. */
 		public Receiver(Socket socket) throws IOException {
 			out = new DataOutputStream(socket.getOutputStream());
 			in = new DataInputStream(socket.getInputStream());
-			info = in.readUTF();
-			System.out.println(info);
 		}
 
 		public void run() {
 			try {// 계속 듣기만!!
 				while (in != null) {
-					msg = in.readUTF();
-					System.out.print(msg);
+					id = in.readUTF();
+					pwd = in.readUTF();
+					seatSt = in.readUTF();
+					seat = new Integer(seatSt);
+					setseatinfo[seat] = new setSeatInfo();
+					setseatinfo[seat].setId(id);
+					setseatinfo[seat].setPassword(pwd);
+					setseatinfo[seat].setSeat(seat);
+					
+					System.out.println(setseatinfo[seat].getinfo());
+
+					
 				}
 			} catch (IOException e) {
 				// 사용접속종료시 여기서 에러 발생. 그럼나간거에요.. 여기서 리무브 클라이언트 처리 해줍니다.

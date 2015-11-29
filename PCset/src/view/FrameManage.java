@@ -25,7 +25,6 @@ import view.panel.ClockMessage;
 import view.panel.ImgClock;
 import view.panel.MyStarPanel;
 import view.panel.PanImgload;
-import view.panel.Servermanage;
 import asset.Setting;
 
 @SuppressWarnings("serial")
@@ -37,11 +36,9 @@ public class FrameManage extends JFrame {
 	private MyStarPanel myStarPanel = new MyStarPanel();
 	private ImgClock imgClock = new ImgClock();
 	private ClockMessage clockMessage = new ClockMessage();
-
 	int posXpanSeat, posYpanSeat;
 	PanSeat[] pan = new PanSeat[50];
 	JPanel seat50 = new JPanel();
-	private Servermanage management = new Servermanage();
 
 	public FrameManage() {
 		// Configure this Frame
@@ -52,11 +49,6 @@ public class FrameManage extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocation(Setting.locationX, Setting.locationY);
 
-		// 좌석 패널 시작 시작점 165 129
-
-		// seat50.setLayout(null);
-		// seat50.setOpaque(false);
-		// seat50.setBounds(165, 109, 1368, 686);
 		for (int seat = 0; seat < 50; seat++) {
 			pan[seat] = new PanSeat(seat);
 			if (seat % 10 == 0 && seat != 0) {
@@ -69,9 +61,14 @@ public class FrameManage extends JFrame {
 			// seat50.add(pan[seat]);
 
 		}
-		new SeatThread().start();
+		
+			
+		
+		
 		add(setJLayered(backGround, myStarPanel, imgClock, clockMessage, seat50));
 		add(layeredPane);
+		new SeatThread().start();
+		
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -134,7 +131,7 @@ public class FrameManage extends JFrame {
 		}
 	}
 
-	class PanSeat extends JPanel implements MouseListener{
+	class PanSeat extends JPanel implements MouseListener {
 		private BufferedImage img = null;
 		JLabel[] label = new JLabel[4];
 		private int numSeat;
@@ -143,7 +140,7 @@ public class FrameManage extends JFrame {
 		public PanSeat(int numSeat) {
 			this.numSeat = numSeat;
 			check(flag);
-			
+
 			setLayout(null);
 
 			JPanel panImg = new InnerPanel();
@@ -156,10 +153,32 @@ public class FrameManage extends JFrame {
 			panContent.setBounds(0, 0, 99, 99);
 			int posLabel = 15;
 			for (int i = 0; i < 4; i++) {
-				if (i == 0)
+
+				switch (i) {
+				case 1:
 					label[i] = new JLabel((numSeat + 1) + ". 빈자리");
-				else
+					break;
+				case 2:
+					try {
+						label[i] = new JLabel(
+								main.Main.setseatinfo[numSeat+1].getId());
+					} catch (Exception e) {
+						label[i] = new JLabel("");
+						// TODO: handle exception
+					}break;
+				case 3:
+					try {
+						label[i] = new JLabel(
+								main.Main.setseatinfo[numSeat+1].getId());
+					} catch (Exception e) {
+						label[i] = new JLabel("");
+						// TODO: handle exception
+					}break;
+				default:
 					label[i] = new JLabel("");
+
+					break;
+				}
 
 				label[i].setBounds(20, posLabel, 80, 15);
 				posLabel += 16;
@@ -190,13 +209,15 @@ public class FrameManage extends JFrame {
 				g.drawImage(img, 0, 0, null);
 			}
 		}
-		public void check(int flag){
+
+		public void check(int flag) {
 			if (flag == 0) {
 				img("gameOff");
 			} else {
 				img("gameOn");
 			}
 		}
+
 		public void img(String filename) {
 			// 이미지 받아오기 - gameOn, gameOff (로그인, 로그오프)
 			try {
@@ -213,36 +234,33 @@ public class FrameManage extends JFrame {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
-			flag = (flag!=0)?0:1;
+			flag = (flag != 0) ? 0 : 1;
 			check(flag);
-			/*if (flag==1) {
-				new UserManagement(numSeat+1);
-				
-			}*/
+
 		}
 
 		@Override
 		public void mouseEntered(MouseEvent e) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void mousePressed(MouseEvent e) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 	}

@@ -1,10 +1,14 @@
 package model;
 
-public class setSeat {
+public class setSeatInfo {
 
 	private String id;
 	private String password;
 	private int seat;
+
+	public setSeatInfo() {
+		// TODO Auto-generated constructor stub
+	}
 
 	public String getId() {
 		return id;
@@ -29,4 +33,9 @@ public class setSeat {
 	public void setSeat(int seat) {
 		this.seat = seat;
 	}
+	public String getinfo(){
+		String msg = getId()+" ,"+getPassword()+"," +getSeat();
+		return msg;
+	}
+	
 }

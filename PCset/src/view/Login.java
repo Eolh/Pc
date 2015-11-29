@@ -1,149 +1,123 @@
 package view;
 
-import java.awt.BorderLayout;
-import java.awt.Button;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.Panel;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import javax.imageio.stream.IIOByteBuffer;
+import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class Login extends JFrame implements ActionListener{
+public class Login extends JFrame implements ActionListener {
 	private Socket socket;
-	static JLabel label1, label2, label3,label4;
-	public JTextField text1,text3;
-	public JPasswordField text2;
-	Button button1, button2, button3;
-	public String id1, pw1;
-	static String [] info;
-    DataOutputStream out;
-	Login() {
-		
-		try {
-			socket = new Socket("192.168.0.3", 9999);
+	private static final long serialVersionUID = 1L;
+	private JPanel p;
+	private JTextField tf_id;
+	private JTextField tf_Num;
+	private JPasswordField tf_pass; // 비밀번호
+	private JTextArea taIntro;
+	private JButton btn2, btn3; // 가입, 취소 버튼
+	private GridBagLayout gb;
+	private GridBagConstraints gbc;
+	private DataOutputStream out;
+	// 연동
+
+	public Login() {
+		super("회원가입");
+		 try {
+			socket = new Socket("192.168.0.3",9999);
+			out = new DataOutputStream(socket.getOutputStream());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// 패널1
-		Panel p1 = new Panel();
-		// 기본레이아웃을 flowLayout으로 준다.
-		p1.setLayout(new FlowLayout());
-		// 패널2
-		Panel p2 = new Panel();
 		
-		// 이패널에는 그리드레이아웃을 준다 (가로,세로 , 넓이, 높이)라고 생각하면된다.
-		p2.setLayout(new GridLayout(5, 4, 5, 5));
-		
-		// 버튼1
-		button1 = new Button("로그인");
-		button1.addActionListener(this);
-		// 버튼2
-		button2 = new Button("cancel");
-		// 버튼3
-		button3 = new Button("회원가입");
+		gb = new GridBagLayout();
+		setLayout(gb);
+		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
 
-		// 패널1에 버튼 추가
-		p1.add(button1);
-		p1.add(button2);
-		p1.add(button3);
-		
-		// 라벨
-		label1 = new JLabel("ID : ");
-		label1.setSize(10, 10);
-		
-		// 패널2에 라벨추가
-		p2.add(label1);
-		
-		// 텍스트필드
-		text1 = new JTextField(10);
-		text1.setSize(10, 10);
-		
-		// 패널2에 텍스트필드 추가.
-		p2.add(text1);
+		// 아이디
+		JLabel bId = new JLabel("아이디 : ");
+		tf_id = new JTextField(20);
+		// 그리드백에 붙이기
+		gbAdd(bId, 0, 0, 1, 1);
+		gbAdd(tf_id, 1, 0, 3, 1);
 
-		label2 = new JLabel("PW");
-		label2.setSize(10, 10);
-		p2.add(label2);
+		// 비밀번호
+		JLabel bPwd = new JLabel("비밀번호 : ");
+		tf_pass = new JPasswordField(20);
+		gbAdd(bPwd, 0, 1, 1, 1);
+		gbAdd(tf_pass, 1, 1, 3, 1);
 
-		text2 = new JPasswordField();
-		text2.setSize(10, 10);
-		p2.add(text2);
-		
-		JPanel p4 = new JPanel();
-		label4 = new JLabel("Seat");
-		label4.setSize(10, 10);
-		p2.add(label4);
+		// 자리 번호
+		JLabel bNum = new JLabel("번호 :");
+		tf_Num = new JTextField(20);
+		gbAdd(bNum, 0, 2, 1, 1);
+		gbAdd(tf_Num, 1, 2, 3, 1);
 
-		text3 = new JTextField();
-		text3.setSize(10, 10);
-		p2.add(text3);
+		// 버튼
+		JPanel pButton = new JPanel();
+		btn2 = new JButton("로그인");
+		btn3 = new JButton("회원가입");
+		pButton.add(btn2);
+		pButton.add(btn3);
+		gbAdd(pButton, 0, 10, 4, 1);
 
-		Panel p3 = new Panel();
-		p3.setLayout(new FlowLayout());
-		label3 = new JLabel("로그인");
-		p3.add(label3);
+		btn2.addActionListener(this);
+		btn3.addActionListener(this);
 
-		setTitle("Login");
-		setSize(350, 350);
+		setSize(350, 500);
 		setVisible(true);
-		setLayout(new BorderLayout());
-		
-		// p1즉 버튼들을 아래쪽으로 배치한다.
-		add(p1, BorderLayout.SOUTH);
-		add(p2);
-		// 로그인이란 라벨을 위쪽에 배치한다.
-		add(p3, BorderLayout.NORTH);
-		
-		// 윈도우리스너를 줘서 x누르면 awt창이 꺼지도록 한다.
-		addWindowListener(new WindowHandler());
+
 	}
 
-	public static void main(String[] args){
+	// 그리드백레이아웃에 붙이는 메소드
+	private void gbAdd(JComponent c, int x, int y, int w, int h) {
+		gbc.gridx = x;
+		gbc.gridy = y;
+		gbc.gridwidth = w;
+		gbc.gridheight = h;
+		// gb.setConstraints(c, gbc);
+		gbc.insets = new Insets(2, 2, 2, 2);
+		add(c, gbc);
+	}// gbAdd
+
+	public static void main(String[] args) {
 		new Login();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println(text1.getText());
-		System.out.println(new String(text2.getPassword()));
-		System.out.println(text3.getText());
-
+		String id = tf_id.getText().trim();
+		String pwd = tf_pass.getText().trim();
+		String seat = tf_Num.getText().trim();
 		// TODO Auto-generated method stub
-		info[0]= text1.getText();
-		info[1]= new String(text2.getPassword());
-		info[2]= text3.getText();
-		sendInfo(info);
+		sendInfo(id, pwd, seat);
 	}
-	public void sendInfo(String[] info) {
-		for (int i=0 ; i<3;i++) {
-			String info1 = info[i];
-			System.out.println(info1);
-			try {
-				out.writeUTF(info1);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-}
 
-//윈도우 핸들러 x버튼 클릭시 종료 해주는것.
-class WindowHandler extends WindowAdapter {
-	public void windowClosing(WindowEvent e) {
-		System.exit(0);
+	public void sendInfo(String id, String password, String seat) {
+
+		try {
+			out.writeUTF(id);
+			out.writeUTF(password);
+			out.writeUTF(seat);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
