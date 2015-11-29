@@ -1,4 +1,4 @@
-package client;
+package chat.client;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -9,8 +9,8 @@ import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import server.ServerBackground;
-import server.ServerGUI;
+import chat.server.ServerBackground;
+import chat.server.ServerGUI;
 
 public class ClientGUI extends JFrame implements ActionListener {
 	 
