@@ -16,20 +16,6 @@ public class H2DB_Initializer {
 		Class.forName("org.gjt.mm.mysql.Driver");
 		Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "root", "1234");
 
-		String sql = "drop table if exists member";
-		stmt = conn.createStatement();
-		stmt.execute(sql);
-		String sql2 = "CREATE TABLE member("
-                + "NUM INT auto_increment, "
-                + "ID VARCHAR primary key, "
-                + "PASSWORD VARCHAR, "
-                + "AGE INT,"
-                + "PHONE VARCHAR,"
-                + "MILEAGE INT);";
-
-		Statement stmt = conn.createStatement();
-		stmt.execute(sql2);
-
 		pstmt = conn.prepareStatement("show tables");
 		ResultSet rs = pstmt.executeQuery();
 		while (rs.next()) {

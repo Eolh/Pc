@@ -12,12 +12,9 @@ public class DaoLogin {
 		H2DB_Initializer h2db = new H2DB_Initializer();
 		h2db.initDatabase();
 		DaoLogin loginTest = new DaoLogin();
-		int test2 = loginTest.insertUser();
-		boolean test = loginTest.loginCheck("admin", "1234");
-		System.out.println("로그인 결과 :" + test + "생성결과 :" + test2);
 	}
 
-	public  int insertUser() throws Exception {
+	public  int insertUser(String id, String password) throws Exception {
 		DBConnectionMgr pool = DBConnectionMgr.getInstance();
 
 		Connection con = null;

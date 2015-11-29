@@ -39,7 +39,7 @@ public class Setting {
 	// Label Location
 	public static Rectangle ampmLabel = new Rectangle(15, 20, 100, 30);
 	public static Rectangle timeLabel = new Rectangle(0, 0, 100, 20);
-
+	public static Rectangle management = new Rectangle(0,0, 1600,900);
 	
 	// ManageView 에 들어갈 것들
 	public static Rectangle layeredPane = bRectangle;

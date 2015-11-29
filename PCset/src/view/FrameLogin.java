@@ -40,7 +40,6 @@ public class FrameLogin extends JFrame implements ActionListener{
         hdInitializer.initDatabase();
         
         DaoLogin daoLogin = new DaoLogin();
-        daoLogin.insertUser();
         
         frameLogin.setDaoLogin(daoLogin);
     }
